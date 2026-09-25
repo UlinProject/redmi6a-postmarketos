@@ -42,13 +42,75 @@ This is a simple weekend project: running the current version of postmarketOS on
 | sensors | Accelerometer, Light & Proximity | **Untested.** Not worked on or initialized. |
 | camera | Front & Rear | **Untested.** Not worked on or initialized. |
 | battery | BN37 (Max 4.4V) | **Partial.** A primitive linear capacity calculation patch is applied (not suitable for daily driver use). If you prefer to use the proprietary MTK downstream kernel blob, do not apply this patch. |
-| leds | Front notification LED, Flashlight | **Working.** Both LEDs are fully operational. |
+| leds | Front notification LED, Flashlight | **Working.** Both LEDs are fully operational. (/sys/class/leds/flashlight/brightness - flashlight; /sys/class/leds/blue/brightness - LED on the screen)|
+| vibration | — | **Working.** However, no custom patches were made to integrate it into standard Linux subsystem frameworks. To trigger vibration, you must manually set the duration first and then write `1` to `activate`. (/sys/class/leds/vibrator) |
 | buttons | Volume Up, Volume Down, Power | **Working.** Key patch added. |
 
 ## Software
 
 Running a modern Linux software stack on this hardware has its nuances:
-* **Toolkits:** `Qt` applications run fully and stably out of the box. Conversely, `GTK` applications fail to launch due to an outdated kernel and a broken `bwrap` (bubblewrap) sandbox mechanism, though applying custom patches slightly improves the situation.
+* **Toolkits:** 
+  * `Qt` applications run fully and stably out of the box, with excellent touchscreen responsiveness.
+  * `GTK` applications fail to launch cleanly due to an outdated kernel and a broken `bwrap` (bubblewrap) sandbox mechanism. Even with custom patches applied, touchscreen behavior remains problematic. For example, in `Xfce`, tapping the main application menu does not trigger an action no matter how many times you click it, whereas panel widgets like the clock/date menu respond perfectly.
 * **Browsers:** Both `Chromium` and `Firefox` run stably.
 * **Display Server & Window Managers:** `X11` works flawlessly, and `Openbox` is highly recommended as a lightweight starting point. No attempts have been made to run `Wayland` environments.
 * **Performance:** Overall system responsiveness and performance are exactly what you would expect from a low-end SoC of this generation.
+
+## Patches
+
+A collection of workarounds and fixes to resolve various issues. Keep in mind that most major problems and limitations stem directly from the outdated kernel.
+
+<details> 
+  <summary><b># Time & Date (chronyd)</b></summary>
+  
+  **File:** `/etc/conf.d/chronyd`
+  
+  ```ini
+  command_args="-F 0"
+  ```
+
+  Without this, chronyd won't even start.
+</details>
+
+<details> 
+  <summary><b># GTK & Icons Fix (bwrap bypass)</b></summary>
+
+  Because sandbox isolation via `bwrap` fails completely on this outdated kernel, launching most modern GTK applications is normally impossible. This patch acts as a workaround by substituting `bwrap` with a wrapper script to bypass isolation entirely. 
+  
+  > ⚠️ **Note:** This is not a proper solution. Be aware that system updates may overwrite this file and restore the original `bwrap` binary.
+
+  ### Step 1: Remove or backup the original binary
+  ```bash
+  sudo rm /usr/bin/bwrap
+  ```
+  ### Step 2: Create the wrapper script
+  **File:** `/usr/bin/bwrap`
+  
+  ```sh
+  #!/bin/sh
+
+if echo "$@" | grep -q "glycin-svg"; then
+    DBUS_FD=$(echo "$@" | grep -o -- '--dbus-fd [0-9]*' | awk '{print $2}')
+    
+    export container=bwrap
+    export UNDER_BWRAP=1
+
+    if [ -x "/usr/libexec/glycin-loaders/2+/glycin-svg" ]; then
+        exec "/usr/libexec/glycin-loaders/2+/glycin-svg" --dbus-fd "$DBUS_FD"
+    elif [ -x "/usr/libexec/glycin-loaders/glycin-svg" ]; then
+        exec "/usr/libexec/glycin-loaders/glycin-svg" --dbus-fd "$DBUS_FD"
+    elif [ -x "/home/alarm/.cache/glycin/usr/libexec/glycin-loaders/2+/glycin-svg" ]; then
+        exec "/home/alarm/.cache/glycin/usr/libexec/glycin-loaders/2+/glycin-svg" --dbus-fd "$DBUS_FD"
+    fi
+fi
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --) shift; exec "$@";;
+        -*) shift;;
+        *) exec "$@";;
+    esac
+done
+  ```
+</details>
+
