@@ -252,7 +252,14 @@ stop() {
   While this is not unique to this specific device, here is how to route internet traffic from your host PC to the smartphone over the USB RNDIS interface.
 
   ### Step 1: On the Smartphone (postmarketOS)
-  Add a default gateway pointing to your host PC's IP address:
+  Instead of running the `ip route` command manually every time you connect the cable, you can create a `udev` rule to automate this process.
+
+  **File:** `/etc/udev/rules.d/99-rndis-route.rules`
+  ```ini
+  ACTION=="add", SUBSYSTEM=="net", KERNEL=="rndis0", RUN+="/sbin/ip route add default via 172.16.42.2 dev rndis0 table main"
+  ```
+
+  *Alternative (one-time manual command):*
   ```bash
   sudo ip route add default via 172.16.42.2 dev rndis0 table main
   ```
