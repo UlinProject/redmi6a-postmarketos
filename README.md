@@ -29,7 +29,7 @@ This is a simple weekend project: running the current version of postmarketOS on
 | ---- | ----- | ------ |
 | board / codename | xiaomi-cactus |  |
 | SoC | MediaTek Helio A22 (MT6762M / MT6761) |  |
-| kernel | 4.9.117 (armv7) | **Working.** The kernel and OS only boot in `armv7` mode. Running `aarch64` is not recommended until mainline kernel support is achieved. |
+| kernel | 4.9.117 (armv7, non mainline) | **Working.** The kernel and OS only boot in `armv7` mode. Running `aarch64` is not recommended until mainline kernel support is achieved. |
 | cpu | Quad-core 2.0 GHz Cortex-A53 (12nm) | **Working.** Governors: `schedplus`, `powersave`, `conservative`, and `ondemand`. *Note: `schedutil` performs poorly.* |
 | gpu | PowerVR Rogue GE8320 | **WIP.** GPU firmware can be loaded, but nothing beyond that. No active attempts to enable full hardware acceleration yet; waiting for mainline kernel support. |
 | mem | 2 GB LPDDR3 | **Working** out of the box. |
@@ -43,7 +43,7 @@ This is a simple weekend project: running the current version of postmarketOS on
 | camera | Front & Rear | **Untested.** Not worked on or initialized. |
 | battery | BN37 (Max 4.4V) | **Partial.** A primitive linear capacity calculation patch is applied (not suitable for daily driver use). If you prefer to use the proprietary MTK downstream kernel blob, do not apply this patch. |
 | leds | Front notification LED, Flashlight | **Working.** Both LEDs are fully operational. (/sys/class/leds/flashlight/brightness - flashlight; /sys/class/leds/blue/brightness - LED on the screen)|
-| vibration | — | **Working.** However, no custom patches were made to integrate it into standard Linux subsystem frameworks. To trigger vibration, you must manually set the duration first and then write `1` to `activate`. (/sys/class/leds/vibrator) |
+| vibration | — | **Working.** However, no custom patches were made to integrate it into standard Linux subsystem frameworks. To trigger vibration, you must manually set the duration (/sys/class/leds/vibrator/duration) first and then write `1` to `activate`. (/sys/class/leds/vibrator) |
 | buttons | Volume Up, Volume Down, Power | **Working.** Key patch added. |
 
 ## Software
@@ -52,10 +52,17 @@ Running a modern Linux software stack on this hardware has its nuances:
 * **Init System:** Only `OpenRC` is currently supported and working. `systemd` is completely non-functional at this stage.
 * **Toolkits:** 
   * `Qt` applications run fully and stably out of the box, with excellent touchscreen responsiveness.
-  * `GTK` applications fail to launch cleanly due to an outdated kernel and a broken `bwrap` (bubblewrap) sandbox mechanism. Even with custom patches applied, touchscreen behavior remains problematic. For example, in `Xfce`, tapping the main application menu does not trigger an action no matter how many times you click it, whereas panel widgets like the clock/date menu respond perfectly.
+  * `GTK` applications fail to launch cleanly due to an outdated kernel and a broken `bwrap` (bubblewrap) sandbox mechanism (fixed via temporary patches). Even with custom patches applied, touchscreen behavior remains problematic. For example, in `Xfce`, tapping the main application menu does not trigger an action no matter how many times you click it, whereas panel widgets like the clock/date menu respond perfectly.
 * **Browsers:** Both `Chromium` and `Firefox` run stably.
 * **Display Server & Window Managers:** `X11` works flawlessly, and `Openbox` is highly recommended as a lightweight starting point. No attempts have been made to run `Wayland` environments.
-* **Performance:** Overall system responsiveness and performance are exactly what you would expect from a low-end SoC of this generation.
+* **Performance:** Overall system responsiveness and performance are exactly what you would expect from a low-end SoC of this generation (without a GPU).
+
+## Screenshots
+
+<img src="./screenshots/1.png" width="30%"></img>
+<img src="./screenshots/2.png" width="30%"></img>
+<img src="./screenshots/3.png" width="30%"></img>
+
 
 ## Patches
 
@@ -547,7 +554,6 @@ export LIBGL_ALWAYS_SOFTWARE=1
   ```
 </details>
 
-
 ## Benchmarks
 
 <details> 
@@ -633,6 +639,7 @@ Threads fairness:
 
   ```
 </details>
+
 
 ## License
 This project is licensed under the **GNU General Public License v2.0** - see the [LICENSE](LICENSE) file for details.
