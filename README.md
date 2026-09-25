@@ -335,7 +335,7 @@ stop() {
 
 
 <details> 
-  <summary><b># Hide Mouse Cursor (Openbox)</b></summary>
+  <summary><b># Hide Mouse Cursor (openbox)</b></summary>
 
   Since this is a touchscreen device, keeping a permanent mouse pointer on the screen is annoying. You can use `unclutter-xfixes` to automatically hide the cursor on touch input or after a brief period of inactivity.
 
