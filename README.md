@@ -29,7 +29,7 @@ This is a simple weekend project: running the current version of postmarketOS on
 | ---- | ----- | ------ |
 | board / codename | xiaomi-cactus |  |
 | SoC | MediaTek Helio A22 (MT6762M / MT6761) |  |
-| kernel | 4.9.117 (armv7) | **Working.** The kernel and OS only boot in `armv7` mode. Running `aarch64` is not recommended until mainline kernel support is achieved. |
+| kernel | 4.9.117 (armv7, non mainline) | **Working.** The kernel and OS only boot in `armv7` mode. Running `aarch64` is not recommended until mainline kernel support is achieved. |
 | cpu | Quad-core 2.0 GHz Cortex-A53 (12nm) | **Working.** Governors: `schedplus`, `powersave`, `conservative`, and `ondemand`. *Note: `schedutil` performs poorly.* |
 | gpu | PowerVR Rogue GE8320 | **WIP.** GPU firmware can be loaded, but nothing beyond that. No active attempts to enable full hardware acceleration yet; waiting for mainline kernel support. |
 | mem | 2 GB LPDDR3 | **Working** out of the box. |
