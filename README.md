@@ -359,6 +359,59 @@ stop() {
 </details>
 
 
+
+<details> 
+  <summary><b># Force Software Rendering</b></summary>
+  
+  Since full hardware GPU acceleration is not available, forcing software rendering via the CPU is mandatory to ensure UI stability. This patch configures environment variables globally to drop hardware GL calls, bypass sandbox restrictions that cause crashes, and tweak Mesa/Gallium for stable frame pacing.
+
+  ### Step 1: Force Software Rendering (Qt, GTK, and WebKit)
+  **File:** `/etc/profile.d/software-rendering.sh`
+  ```bash
+  #!/bin/sh
+
+export GALLIUM_DRIVER=llvmpipe
+export LIBGL_ALWAYS_SOFTWARE=1
+
+export GSK_RENDERER=cairo
+export GDK_DEBUG=gl-disable
+
+export QT_XCB_GL_INTEGRATION=none
+export QT_QUICK_BACKEND=software
+
+export GTK_DISABLE_SANDBOX=1
+export WEB_KIT_DISABLE_SANDBOX=1
+
+export GTK_DISABLE_THUMBNAILS=1
+
+export NO_AT_BRIDGE=1
+export GTK_A11Y=none
+
+export GLYCIN_DATA_DIR=/usr/share/glycin
+export GDK_PIXBUF_DISABLE_SANDBOX=1
+export GTK_DISABLE_SANDBOX=1
+
+export FOZ_DISABLE_SANDBOX=1
+export GDK_PIXBUF_MODULE_FILE=/usr/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
+
+[ -f /lib/gdk-pixbuf-2.0/2.10.0/loaders.cache ] && export GDK_PIXBUF_MODULE_FILE=/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
+
+export G_DEBUG=0
+export G_OBJECT_DEBUG=0
+export G_ENABLE_DIAGNOSTIC=0
+
+export GTK_DEBUG=no-warnings
+export G_BOOTSTRAP_FACCESSAT=0
+export GLYCIN_LOADERS_DIR=/usr/libexec/glycin-loaders
+
+
+export QT_XCB_GL_INTEGRATION=xcb_egl
+export QT_QUICK_BACKEND=software
+export LIBGL_ALWAYS_SOFTWARE=1
+  ```
+</details>
+
+
 <details> 
   <summary><b># Display & Touchscreen Rotation (X11 + Openbox)</b></summary>
 
