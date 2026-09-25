@@ -52,10 +52,17 @@ Running a modern Linux software stack on this hardware has its nuances:
 * **Init System:** Only `OpenRC` is currently supported and working. `systemd` is completely non-functional at this stage.
 * **Toolkits:** 
   * `Qt` applications run fully and stably out of the box, with excellent touchscreen responsiveness.
-  * `GTK` applications fail to launch cleanly due to an outdated kernel and a broken `bwrap` (bubblewrap) sandbox mechanism. Even with custom patches applied, touchscreen behavior remains problematic. For example, in `Xfce`, tapping the main application menu does not trigger an action no matter how many times you click it, whereas panel widgets like the clock/date menu respond perfectly.
+  * `GTK` applications fail to launch cleanly due to an outdated kernel and a broken `bwrap` (bubblewrap) sandbox mechanism (fixed via temporary patches). Even with custom patches applied, touchscreen behavior remains problematic. For example, in `Xfce`, tapping the main application menu does not trigger an action no matter how many times you click it, whereas panel widgets like the clock/date menu respond perfectly.
 * **Browsers:** Both `Chromium` and `Firefox` run stably.
 * **Display Server & Window Managers:** `X11` works flawlessly, and `Openbox` is highly recommended as a lightweight starting point. No attempts have been made to run `Wayland` environments.
-* **Performance:** Overall system responsiveness and performance are exactly what you would expect from a low-end SoC of this generation.
+* **Performance:** Overall system responsiveness and performance are exactly what you would expect from a low-end SoC of this generation (without a GPU).
+
+## Screenshots
+
+<img src="./screenshots/1.png" width="30%"></img>
+<img src="./screenshots/2.png" width="30%"></img>
+<img src="./screenshots/3.png" width="30%"></img>
+
 
 ## Patches
 
@@ -546,14 +553,6 @@ export LIBGL_ALWAYS_SOFTWARE=1
   sudo chmod +x /usr/libexec/elogind/elogind
   ```
 </details>
-
-## Screenshots
-
-<img src="./screenshots/1.png" width="30%"></img>
-<img src="./screenshots/2.png" width="30%"></img>
-<img src="./screenshots/3.png" width="30%"></img>
-
-
 
 ## Benchmarks
 
