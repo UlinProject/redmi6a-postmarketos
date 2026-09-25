@@ -247,6 +247,36 @@ stop() {
 </details>
 
 <details> 
+  <summary><b># Share PC Internet Access via RNDIS (Reverse Tethering)</b></summary>
+
+  While this is not unique to this specific device, here is how to route internet traffic from your host PC to the smartphone over the USB RNDIS interface.
+
+  ### Step 1: On the Smartphone (postmarketOS)
+  Add a default gateway pointing to your host PC's IP address:
+  ```bash
+  sudo ip route add default via 172.16.42.2 dev rndis0 table main
+  ```
+
+  ### Step 2: On the Host PC (Linux)
+  Enable packet forwarding and configure NAT (`iptables`) to share your internet connection. 
+  
+  *Note: Replace `<your_pc_internet_interface>` (e.g., `eth0`, `wlan0`) and `<your_phone_usb_interface>` (e.g., `enp3s0f4u1...`) with your actual network interface names from `ip a`.*
+
+  ```bash
+  # 1. Enable IPv4 packet forwarding in the Linux kernel
+  sudo sysctl net.ipv4.ip_forward=1
+
+  # 2. Enable Masquerading (NAT) on your main internet-facing interface
+  sudo iptables -t nat -A POSTROUTING -o <your_pc_internet_interface> -j MASQUERADE
+
+  # 3. Allow traffic forwarding between the internet and the phone interfaces
+  sudo iptables -A FORWARD -i <your_phone_usb_interface> -o <your_pc_internet_interface> -j ACCEPT
+  sudo iptables -A FORWARD -i <your_pc_internet_interface> -o <your_phone_usb_interface> -m state --state RELATED,ESTABLISHED -j ACCEPT
+  ```
+</details>
+
+
+<details> 
   <summary><b># Display Backlight Control</b></summary>
 
   Patches for fully functional backlight control are already included in the kernel. To control brightness without root privileges, you just need to ensure the `video` group exists, assign your user to it, and deploy the appropriate `udev` rule.
