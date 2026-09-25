@@ -127,7 +127,7 @@ start_pre() {
 </details>
 
 <details> 
-  <summary><b># GTK & Icons Fix (bwrap bypass)</b></summary>
+  <summary><b># GTK & Icons Fix (gtk, bwrap)</b></summary>
 
   Because sandbox isolation via `bwrap` fails completely on this outdated kernel, launching most modern GTK applications is normally impossible. This patch acts as a workaround by substituting `bwrap` with a wrapper script to bypass isolation entirely. 
   
@@ -174,7 +174,7 @@ done
 
 
 <details> 
-  <summary><b># RNDIS Disconnects & Slow SSH Login (USB Ethernet)</b></summary>
+  <summary><b># RNDIS Disconnects & Slow SSH Login (otg, rndis)</b></summary>
 
   This issue is caused by `NetworkManager`, which is not fully debugged for this device. Disconnecting and reconnecting the USB cable breaks the RNDIS connection, and SSH logins experience significant delays. To resolve this, you can configure NetworkManager to ignore the `rndis0` interface and let `unudhcpd` handle it instead.
   
@@ -247,7 +247,7 @@ stop() {
 </details>
 
 <details> 
-  <summary><b># Share PC Internet Access via RNDIS (Reverse Tethering)</b></summary>
+  <summary><b># Share PC Internet Access via RNDIS (otg, rndis)</b></summary>
 
   While this is not unique to this specific device, here is how to route internet traffic from your host PC to the smartphone over the USB RNDIS interface.
 
@@ -284,7 +284,7 @@ stop() {
 
 
 <details> 
-  <summary><b># Display Backlight Control</b></summary>
+  <summary><b># Display Backlight Control (udev)</b></summary>
 
   Patches for fully functional backlight control are already included in the kernel. To control brightness without root privileges, you just need to ensure the `video` group exists, assign your user to it, and deploy the appropriate `udev` rule.
 
@@ -309,7 +309,7 @@ stop() {
 </details>
 
 <details> 
-  <summary><b># Glycin / Image Loading Fix (GTK4 & GNOME apps)</b></summary>
+  <summary><b># Glycin / Image Loading Fix (gtk, GTK4 & GNOME apps)</b></summary>
 
   `Glycin` is an image decoding library used by modern GTK4/GNOME applications. Due to its heavy reliance on strict sandboxing features that are broken on outdated kernels, image and icon rendering will fail completely. This patch forces Glycin to bypass sandboxing and corrects resource directory paths.
 
@@ -356,7 +356,7 @@ stop() {
 </details>
 
 <details> 
-  <summary><b># Screen Not Refreshing / Frozen Display Fix</b></summary>
+  <summary><b># Screen Not Refreshing / Frozen Display Fix (x11)</b></summary>
 
   Because this port currently relies on a pre-initialized simple framebuffer without proper hardware GPU acceleration, the display does not refresh its frames automatically. To solve this, you need to configure the `msm-fb-refresher` daemon to force screen updates periodically.
   
@@ -387,7 +387,7 @@ stop() {
 
 
 <details> 
-  <summary><b># Force Software Rendering</b></summary>
+  <summary><b># Force Software Rendering (qt, gtk, webkit, ...)</b></summary>
   
   Since full hardware GPU acceleration is not available, forcing software rendering via the CPU is mandatory to ensure UI stability. This patch configures environment variables globally to drop hardware GL calls, bypass sandbox restrictions that cause crashes, and tweak Mesa/Gallium for stable frame pacing.
 
@@ -439,7 +439,7 @@ export LIBGL_ALWAYS_SOFTWARE=1
 
 
 <details> 
-  <summary><b># Display & Touchscreen Rotation (X11 + Openbox)</b></summary>
+  <summary><b># Display & Touchscreen Rotation (x11, openbox)</b></summary>
 
   By default, the display initializes in portrait orientation. This patch configures `Xorg` to rotate the frame buffer clockwise (`CW`) and updates the `xinput` coordinate transformation matrix in `Openbox` so that touch inputs align correctly with the rotated screen.
 
@@ -486,7 +486,7 @@ export LIBGL_ALWAYS_SOFTWARE=1
 </details>
 
 <details> 
-  <summary><b># Automatic Reboots (Xfce)</b></summary>
+  <summary><b># Automatic Reboots (xfce)</b></summary>
 
   Further testing on `Xfce` was abandoned due to the previously mentioned touchscreen controls. If you encounter unexpected automatic reboots after a specific period of uptime. You can fix this by replacing the `elogind` daemon with a sleeping stub.
 
