@@ -65,6 +65,11 @@ Running a modern Linux software stack on this hardware has its nuances:
 
 [See all](./screenshots)
 
+## Make firmware
+
+[See make](./Make.md)
+
+After assembly, flashing, and the initial startup (with a frozen screen but a working SSH connection), proceed to apply the patches.
 
 ## Patches
 
