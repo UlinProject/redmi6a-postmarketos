@@ -161,36 +161,31 @@ start_pre() {
   
   ### Step 1: Remove or backup the original binary
   ```bash
-  sudo rm /usr/bin/bwrap
+  sudo rm -f /bin/bwrap
+  sudo rm -f /usr/bin/bwrap
   ```
   ### Step 2: Create the wrapper script
   **File:** `/usr/bin/bwrap`
   
   ```sh
-  #!/bin/sh
+#!/bin/sh
 
-if echo "$@" | grep -q "glycin-svg"; then
-    DBUS_FD=$(echo "$@" | grep -o -- '--dbus-fd [0-9]*' | awk '{print $2}')
-    
-    export container=bwrap
-    export UNDER_BWRAP=1
+export container=bwrap
+export UNDER_BWRAP=1
 
-    if [ -x "/usr/libexec/glycin-loaders/2+/glycin-svg" ]; then
+DBUS_FD=$(echo "$@" | grep -o -- '--dbus-fd [0-9]*' | awk '{print $2}')
+
+if echo "$@" | grep -q "glycin"; then
+    if echo "$@" | grep -q "glycin-svg"; then
         exec "/usr/libexec/glycin-loaders/2+/glycin-svg" --dbus-fd "$DBUS_FD"
-    elif [ -x "/usr/libexec/glycin-loaders/glycin-svg" ]; then
-        exec "/usr/libexec/glycin-loaders/glycin-svg" --dbus-fd "$DBUS_FD"
-    elif [ -x "/home/alarm/.cache/glycin/usr/libexec/glycin-loaders/2+/glycin-svg" ]; then
-        exec "/home/alarm/.cache/glycin/usr/libexec/glycin-loaders/2+/glycin-svg" --dbus-fd "$DBUS_FD"
+    fi
+
+    if echo "$@" | grep -q "glycin-image-rs"; then
+        exec "/usr/libexec/glycin-loaders/2+/glycin-image-rs" --dbus-fd "$DBUS_FD"
     fi
 fi
 
-while [ $# -gt 0 ]; do
-    case "$1" in
-        --) shift; exec "$@";;
-        -*) shift;;
-        *) exec "$@";;
-    esac
-done
+exit 0
   ```
 
   ```bash
