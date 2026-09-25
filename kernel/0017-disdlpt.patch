@@ -1,0 +1,34 @@
+From 2a8cca58692e0d8d6688c43d8d7acfca799b8412 Mon Sep 17 00:00:00 2001
+From: Denis Kotlyarov <denis2005991@gmail.com>
+Date: Wed, 23 Sep 2026 12:47:40 +0300
+Subject: [PATCH] drivers: misc: mediatek: pmic: mt6357: disable DLPT power throttling thread
+
+---
+ drivers/misc/mediatek/pmic/mt6357/v1/pmic_throttling_dlpt.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/misc/mediatek/pmic/mt6357/v1/pmic_throttling_dlpt.c b/drivers/misc/mediatek/pmic/mt6357/v1/pmic_throttling_dlpt.c
+index 70f020707883..084ff4ed9b97 100644
+--- a/drivers/misc/mediatek/pmic/mt6357/v1/pmic_throttling_dlpt.c
++++ b/drivers/misc/mediatek/pmic/mt6357/v1/pmic_throttling_dlpt.c
+@@ -1172,7 +1172,7 @@ void dlpt_notify_task(unsigned long data)
+ 
+ void dlpt_notify_init(void)
+ {
+-	unsigned long dlpt_notify_interval;
++	/*unsigned long dlpt_notify_interval;
+ 
+ 	dlpt_notify_interval = HZ * 30;
+ 	init_timer_deferrable(&dlpt_notify_timer);
+@@ -1187,7 +1187,7 @@ void dlpt_notify_init(void)
+ 	if (IS_ERR(dlpt_notify_thread))
+ 		pr_notice("Failed to create dlpt_notify_thread\n");
+ 	else
+-		pr_info("Create dlpt_notify_thread : done\n");
++		pr_info("Create dlpt_notify_thread : done\n");*/
+ }
+ 
+ #else
+-- 
+2.55.0
+

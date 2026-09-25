@@ -1,0 +1,29 @@
+From 2a8cca58692e0d8d6688c43d8d7acfca799b8412 Mon Sep 17 00:00:00 2001
+From: Denis Kotlyarov <denis2005991@gmail.com>
+Date: Wed, 23 Sep 2026 10:27:00 +0300
+Subject: [PATCH] arm: fix asm section attributes for modern toolchains
+
+--- a/arch/arm/mm/proc-v7.S
++++ b/arch/arm/mm/proc-v7.S
+@@ -557,3 +557,3 @@
+ 
+-	.section ".proc.info.init", #alloc
++	.section ".proc.info.init", "a"
+ 	.type	__v7_ca9mp_proc_info, #object
+
+--- a/arch/arm/boot/compressed/head.S
++++ b/arch/arm/boot/compressed/head.S
+@@ -114,4 +114,4 @@
+ 		.arm
+-		.section ".start", #alloc, #execinstr
++		.section ".start", "ax"
+ 		.type	start, #function
+ 		.globl	start
+
+--- a/arch/arm/boot/compressed/piggy.S
++++ b/arch/arm/boot/compressed/piggy.S
+@@ -1,2 +1,2 @@
+-	.section .piggydata,#alloc
++       .section .piggydata,"a"
+        .globl input_data
+

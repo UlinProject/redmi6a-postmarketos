@@ -1,0 +1,84 @@
+From 2a8cca58692e0d8d6688c43d8d7acfca799b8412 Mon Sep 17 00:00:00 2001
+From: Denis Kotlyarov <denis2005991@gmail.com>
+Date: Wed, 23 Sep 2026 10:27:00 +0300
+Subject: [PATCH] drivers: misc: mediatek: leds: expose lcd-backlight via standard Linux backlight class
+
+---
+ drivers/misc/mediatek/leds/mtk_leds_drv.c | 47 ++++++++++++++++++++++-
+ 1 file changed, 46 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/misc/mediatek/leds/mtk_leds_drv.c b/drivers/misc/mediatek/leds/mtk_leds_drv.c
+index 247ca1ae918a..05ca3ebdd95d 100644
+--- a/drivers/misc/mediatek/leds/mtk_leds_drv.c
++++ b/drivers/misc/mediatek/leds/mtk_leds_drv.c
+@@ -12,6 +12,9 @@
+  * GNU General Public License for more details.
+  */
+ 
++#define CONFIG_BACKLIGHT_CLASS_DEVICE 1
++
++#include <linux/backlight.h>
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+@@ -645,7 +648,29 @@ static int led_i2c_remove(struct i2c_client *client)
+ /****************************************************************************
+  * driver functions
+  ***************************************************************************/
+-static int mt65xx_leds_probe(struct platform_device *pdev)
++#if IS_ENABLED(CONFIG_BACKLIGHT_CLASS_DEVICE)
++static int mt65xx_bl_update_status(struct backlight_device *bd)
++{
++    int brightness = bd->props.brightness;
++
++    if (bd->props.power != FB_BLANK_UNBLANK ||
++        bd->props.fb_blank != FB_BLANK_UNBLANK ||
++        bd->props.state & BL_CORE_FBBLANK) {
++        brightness = 0;
++    }
++
++    mt65xx_leds_brightness_set(MT65XX_LED_TYPE_LCD, brightness);
++
++    return 0;
++}
++
++static const struct backlight_ops mt65xx_bl_ops = {
++    .update_status = mt65xx_bl_update_status,
++};
++#endif
++
++
++ static int mt65xx_leds_probe(struct platform_device *pdev)
+ {
+ 	int i;
+ 	int ret;
+@@ -692,6 +717,26 @@ static int mt65xx_leds_probe(struct platform_device *pdev)
+ 		INIT_WORK(&g_leds_data[i]->work, mt_mt65xx_led_work);
+ 
+ 		ret = led_classdev_register(&pdev->dev, &g_leds_data[i]->cdev);
++    #if IS_ENABLED(CONFIG_BACKLIGHT_CLASS_DEVICE)
++        if (strcmp(g_leds_data[i]->cdev.name, "lcd-backlight") == 0) {
++            struct backlight_properties props;
++            struct backlight_device *bd;
++
++            memset(&props, 0, sizeof(struct backlight_properties));
++            props.type = BACKLIGHT_RAW;
++            props.max_brightness = 255; 
++            props.brightness = 127;
++
++            bd = backlight_device_register("backlight", &pdev->dev,
++                                           g_leds_data[i], &mt65xx_bl_ops, &props);
++            if (IS_ERR(bd)) {
++                pr_err("[LED] Failed to register backlight device!\n");
++            } else {
++                pr_info("[LED] Backlight device registered successfully as backlight\n");
++            }
++        }
++#endif
++
+ 		#if 0
+ 		if (strcmp(g_leds_data[i]->cdev.name, "lcd-backlight") == 0) {
+ 			rc = device_create_file(g_leds_data[i]->cdev.dev,
+-- 
+2.55.0
+

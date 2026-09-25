@@ -1,0 +1,42 @@
+From 2a8cca58692e0d8d6688c43d8d7acfca799b8412 Mon Sep 17 00:00:00 2001
+From: Denis Kotlyarov <denis2005991@gmail.com>
+Date: Wed, 23 Sep 2026 10:27:00 +0300
+Subject: [PATCH] timers: mtk: disable AEE dump in tick broadcast
+
+---
+ kernel/time/tick-broadcast.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/time/tick-broadcast.c b/kernel/time/tick-broadcast.c
+index 946b1c3cd039..e0eba6a877b4 100644
+--- a/kernel/time/tick-broadcast.c
++++ b/kernel/time/tick-broadcast.c
+@@ -23,8 +23,6 @@
+ 
+ #include "tick-internal.h"
+ 
+-#define CONFIG_MTK_TICK_BROADCAST_AEE_DUMP
+-
+ #if defined(CONFIG_MTK_RAM_CONSOLE)
+ #if defined(CONFIG_MTK_TICK_BROADCAST_AEE_DUMP)
+ #include <linux/cpumask.h>
+@@ -54,6 +52,16 @@ static inline void tick_broadcast_clear_oneshot(int cpu) { }
+ static inline void tick_resume_broadcast_oneshot(struct clock_event_device *bc) { }
+ #endif
+ 
++
++#ifndef CONFIG_MTK_TICK_BROADCAST_AEE_DUMP
++
++void tick_broadcast_mtk_aee_dump(void)
++{
++  
++}
++#endif
++
++
+ /*
+  * Debugging: see timer_list.c
+  */
+-- 
+2.55.0
+

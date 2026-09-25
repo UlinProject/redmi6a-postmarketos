@@ -1,0 +1,28 @@
+From 2a8cca58692e0d8d6688c43d8d7acfca799b8412 Mon Sep 17 00:00:00 2001
+From: Denis Kotlyarov <denis2005991@gmail.com>
+Date: Wed, 23 Sep 2026 10:27:00 +0300
+Subject: [PATCH] drivers: input: keyboard: mtk_kpd: expose additional key bits for X11/evdev compatibility
+
+---
+ drivers/input/keyboard/mediatek/kpd.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/drivers/input/keyboard/mediatek/kpd.c b/drivers/input/keyboard/mediatek/kpd.c
+index 031263adcae0..169adaa1bf84 100644
+--- a/drivers/input/keyboard/mediatek/kpd.c
++++ b/drivers/input/keyboard/mediatek/kpd.c
+@@ -400,6 +400,11 @@ static int kpd_pdrv_probe(struct platform_device *pdev)
+ 	kpd_input_dev->dev.parent = &pdev->dev;
+ 
+ 	__set_bit(EV_KEY, kpd_input_dev->evbit);
++  __set_bit(KEY_1, kpd_input_dev->keybit);
++  __set_bit(KEY_2, kpd_input_dev->keybit);
++  __set_bit(KEY_A, kpd_input_dev->keybit);
++  __set_bit(KEY_B, kpd_input_dev->keybit);
++
+ #if defined(CONFIG_KPD_PWRKEY_USE_PMIC)
+ 	__set_bit(kpd_dts_data.kpd_sw_pwrkey, kpd_input_dev->keybit);
+ 	kpd_keymap[8] = 0;
+-- 
+2.55.0
+

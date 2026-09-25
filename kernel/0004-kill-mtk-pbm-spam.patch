@@ -1,0 +1,107 @@
+From 2a8cca58692e0d8d6688c43d8d7acfca799b8412 Mon Sep 17 00:00:00 2001
+From: Denis Kotlyarov <denis2005991@gmail.com>
+Date: Wed, 23 Sep 2026 10:27:00 +0300
+Subject: [PATCH] _
+
+---
+ drivers/misc/mediatek/base/power/pbm_v2/mtk_pbm.c              | 2 +-
+ drivers/misc/mediatek/base/power/pbm_v3/mtk_pbm.c              | 3 ++-
+ drivers/misc/mediatek/base/power/pbm_v4/mtk_pbm.c              | 1 +
+ .../misc/mediatek/base/power/ppm_v3/src/mtk_ppm_policy_dlpt.c  | 1 +
+ drivers/misc/mediatek/eccci/modem_sys1.c                       | 1 +
+ drivers/misc/mediatek/eccci/modem_sys3.c                       | 1 +
+ .../mediatek/include/mt-plat/mt6765/include/mach/mtk_pbm.h     | 3 ++-
+ 7 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/misc/mediatek/base/power/pbm_v2/mtk_pbm.c b/drivers/misc/mediatek/base/power/pbm_v2/mtk_pbm.c
+index 0dc3a47dff50..a4cec7373920 100644
+--- a/drivers/misc/mediatek/base/power/pbm_v2/mtk_pbm.c
++++ b/drivers/misc/mediatek/base/power/pbm_v2/mtk_pbm.c
+@@ -10,7 +10,7 @@
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  * GNU General Public License for more details.
+  */
+-
++#define DISABLE_PBM_FEATURE 1
+ #define pr_fmt(fmt)		"[PBM] " fmt
+ 
+ #include <linux/kernel.h>
+diff --git a/drivers/misc/mediatek/base/power/pbm_v3/mtk_pbm.c b/drivers/misc/mediatek/base/power/pbm_v3/mtk_pbm.c
+index 491925a36563..98d145212095 100644
+--- a/drivers/misc/mediatek/base/power/pbm_v3/mtk_pbm.c
++++ b/drivers/misc/mediatek/base/power/pbm_v3/mtk_pbm.c
+@@ -10,7 +10,8 @@
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  * GNU General Public License for more details.
+  */
+-
++ 
++#define DISABLE_PBM_FEATURE 1
+ #define pr_fmt(fmt)		"[PBM] " fmt
+ 
+ #include <linux/kernel.h>
+diff --git a/drivers/misc/mediatek/base/power/pbm_v4/mtk_pbm.c b/drivers/misc/mediatek/base/power/pbm_v4/mtk_pbm.c
+index 709b2d75c8ef..42a7713aaf42 100644
+--- a/drivers/misc/mediatek/base/power/pbm_v4/mtk_pbm.c
++++ b/drivers/misc/mediatek/base/power/pbm_v4/mtk_pbm.c
+@@ -10,6 +10,7 @@
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  * GNU General Public License for more details.
+  */
++#define DISABLE_PBM_FEATURE 1
+ 
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+diff --git a/drivers/misc/mediatek/base/power/ppm_v3/src/mtk_ppm_policy_dlpt.c b/drivers/misc/mediatek/base/power/ppm_v3/src/mtk_ppm_policy_dlpt.c
+index f52af93e604f..01e9c9a58e8d 100644
+--- a/drivers/misc/mediatek/base/power/ppm_v3/src/mtk_ppm_policy_dlpt.c
++++ b/drivers/misc/mediatek/base/power/ppm_v3/src/mtk_ppm_policy_dlpt.c
+@@ -11,6 +11,7 @@
+  * GNU General Public License for more details.
+  */
+ 
++#define DISABLE_PBM_FEATURE 1
+ 
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+diff --git a/drivers/misc/mediatek/eccci/modem_sys1.c b/drivers/misc/mediatek/eccci/modem_sys1.c
+index 84e2fd5f6d83..9086077965b2 100644
+--- a/drivers/misc/mediatek/eccci/modem_sys1.c
++++ b/drivers/misc/mediatek/eccci/modem_sys1.c
+@@ -10,6 +10,7 @@
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  * See http://www.gnu.org/licenses/gpl-2.0.html for more details.
+  */
++#define DISABLE_PBM_FEATURE 1
+ 
+ #include <linux/list.h>
+ #include <linux/device.h>
+diff --git a/drivers/misc/mediatek/eccci/modem_sys3.c b/drivers/misc/mediatek/eccci/modem_sys3.c
+index 17cea65acd06..09a5c20c19ab 100644
+--- a/drivers/misc/mediatek/eccci/modem_sys3.c
++++ b/drivers/misc/mediatek/eccci/modem_sys3.c
+@@ -10,6 +10,7 @@
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+  * See http://www.gnu.org/licenses/gpl-2.0.html for more details.
+  */
++#define DISABLE_PBM_FEATURE 1
+ 
+ #include <linux/list.h>
+ #include <linux/device.h>
+diff --git a/drivers/misc/mediatek/include/mt-plat/mt6765/include/mach/mtk_pbm.h b/drivers/misc/mediatek/include/mt-plat/mt6765/include/mach/mtk_pbm.h
+index 7e017ccb826a..42321fe2e837 100644
+--- a/drivers/misc/mediatek/include/mt-plat/mt6765/include/mach/mtk_pbm.h
++++ b/drivers/misc/mediatek/include/mt-plat/mt6765/include/mach/mtk_pbm.h
+@@ -10,7 +10,8 @@
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  * GNU General Public License for more details.
+  */
+-
++ 
++#define DISABLE_PBM_FEATURE 1
+ #ifndef _MT_PBM_
+ #define _MT_PBM_
+ 
+-- 
+2.55.0
+

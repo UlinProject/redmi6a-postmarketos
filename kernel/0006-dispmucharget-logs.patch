@@ -1,0 +1,41 @@
+From 2a8cca58692e0d8d6688c43d8d7acfca799b8412 Mon Sep 17 00:00:00 2001
+From: Denis Kotlyarov <denis2005991@gmail.com>
+Date: Wed, 23 Sep 2026 10:27:00 +0300
+Subject: [PATCH] drivers: misc: mediatek: pmic: mt6370: silence chatty charger register dump logs
+
+---
+ .../misc/mediatek/pmic/mt6370/mt6370_pmu_charger_gm20.c   | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/misc/mediatek/pmic/mt6370/mt6370_pmu_charger_gm20.c b/drivers/misc/mediatek/pmic/mt6370/mt6370_pmu_charger_gm20.c
+index c71dec36ff1d..25ac1270d8c7 100644
+--- a/drivers/misc/mediatek/pmic/mt6370/mt6370_pmu_charger_gm20.c
++++ b/drivers/misc/mediatek/pmic/mt6370/mt6370_pmu_charger_gm20.c
+@@ -2326,12 +2326,12 @@ static int mt6370_dump_register(struct mtk_charger_info *mchr_info,
+ 			if (ret < 0)
+ 				return ret;
+ 
+-			dev_dbg(chg_data->dev, "%s: reg[0x%02X] = 0x%02X\n",
+-				__func__, mt6370_chg_reg_addr[i], ret);
++			/*dev_dbg(chg_data->dev, "%s: reg[0x%02X] = 0x%02X\n",
++				__func__, mt6370_chg_reg_addr[i], ret);*/
+ 		}
+ 	}
+ 
+-	dev_info(chg_data->dev,	"%s: ICHG = %dmA, AICR = %dmA, MIVR = %dmV,
++	/*dev_info(chg_data->dev,	"%s: ICHG = %dmA, AICR = %dmA, MIVR = %dmV,
+ 		IEOC = %dmA, CV = %dmV\n", __func__, ichg / 100, aicr / 100,
+ 		mivr / 1000, ieoc / 1000, cv / 1000);
+ 
+@@ -2342,7 +2342,7 @@ static int mt6370_dump_register(struct mtk_charger_info *mchr_info,
+ 
+ 	dev_info(chg_data->dev, "%s: CHG_EN = %d, CHG_STATUS = %s,
+ 		CHG_STAT = 0x%02X\n", __func__, chg_en,
+-		mt6370_chg_status_name[chg_status], chg_stat);
++		mt6370_chg_status_name[chg_status], chg_stat);*/
+ 
+ 	ret = 0;
+ 	return ret;
+-- 
+2.55.0
+

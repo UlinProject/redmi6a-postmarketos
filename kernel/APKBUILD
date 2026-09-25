@@ -1,0 +1,81 @@
+# Archived: Kernel does not build anymore
+# Reference: <https://postmarketos.org/vendorkernel>
+# Kernel config based on: arch/arm/configs/cactus_defconfig
+maintainer="Fedorov Bohdan <misterjdr@yandex.ru>"
+pkgname=linux-xiaomi-cactus
+pkgver=4.9.117
+pkgrel=3
+pkgdesc="Xiaomi Redmi 6A kernel fork"
+arch="armv7"
+_carch="arm"
+_flavor="xiaomi-cactus"
+url="https://kernel.org"
+license="GPL-2.0-only"
+options="!strip !check !tracedeps pmb:cross-native"
+makedepends="bash bc bison devicepkg-dev flex openssl-dev perl python3"
+
+# Source
+_repository="Xiaomi_Kernel_OpenSource"
+_commit="b417db1e025f22dff9dfc65819ecf2db4d9d85f8"
+_config="config-$_flavor.$arch"
+source="
+	$pkgname-$_commit.tar.gz::https://github.com/MiCode/$_repository/archive/$_commit.tar.gz
+	$_config
+	0001-Port-build-scripts-to-Python3.patch
+        0002-fix-modern-gcc-assembler.patch
+        0003-kill-mtk-wdt-hardware.patch
+        0004-kill-mtk-pbm-spam.patch
+        0005-disaux-logs.patch
+        0006-dispmucharget-logs.patch
+        0007-dispmucharget-logs.patch
+        0008-dispmucharget-logs.patch
+        0009-disfocaltouch-logs.patch
+        0010-distickbroadcast-logs.patch
+        0012-addbacklight.patch
+        0013-mtkkpd.patch
+        0014-battery.patch
+        0015-disableusbboost.patch
+        0016-dissleptdispwarning.patch
+        0017-disdlpt.patch
+	linux4.2-gcc10-extern_YYLOC_global_declaration.patch
+"
+builddir="$srcdir/$_repository-$_commit"
+_outdir="out"
+
+prepare() {
+	default_prepare
+	. downstreamkernel_prepare
+}
+
+build() {
+	unset LDFLAGS
+        export KCFLAGS="-Wno-error"
+	make O="$_outdir" ARCH="$_carch" CC="${CC:-gcc}" \
+		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-postmarketOS-ulinproject26"
+}
+
+package() {
+	downstreamkernel_package "$builddir" "$pkgdir" "$_carch" "$_flavor" "$_outdir"
+}
+
+sha512sums="
+7328c6fd8a8aad72a2b88b24319dd0887685d2c1f684f922b258df79aba9eaa151196ed0cb34f2364f7c04ccf1504b3749755ed6cadfd8568e92ae3f8d7f58e5  linux-xiaomi-cactus-b417db1e025f22dff9dfc65819ecf2db4d9d85f8.tar.gz
+b29ad801c1428c91174143aad780b773949f0559726121c364ccd38564ff8c160ef3aedf740509f908531119c2c06c5b778b79f35a68a4228ab43975d98e0451  config-xiaomi-cactus.armv7
+3f295c4ed0eb6d2bcdb88e986a640b20f5fb4c299ae792b01b70b5319d6b3e0d59475a2f3686ed167249aa091a7156760b90f73e9d8dc5505cbaef4cc19d3ffb  0001-Port-build-scripts-to-Python3.patch
+29e843226840fa35235d7d53bb7d7542f489c3531a5697d311c5ae8c903dd59d0eac26456bc1b5f816c55ec15c3eef33bc11a63df408018e1d2a75d7dd63e02e  0002-fix-modern-gcc-assembler.patch
+03e89884c767ae91a84e153877ea171a6a3472ececb5e704bab116da88b3e03c742c44c613ec3f30147c8ea1add34940c1e967e353c57600a5d79a7a22328902  0003-kill-mtk-wdt-hardware.patch
+0f5a5bdc9b041175c18c3357754ea109611cd67ef74516c529271ebe16bc88f78262cc4bc7f124cfd5acf9fe2b829e31680bb65d1baa6fab5cdfa5809f18ce5e  0004-kill-mtk-pbm-spam.patch
+2e43dd5fa10d2d78d160da638cded12bf28a3e15e8cf07f1b5f7c2b7a45e9e453ca2faa65bcd8aa48971157214ad17e37ec44f101ff5088418513f444ca6d61c  0005-disaux-logs.patch
+4b788fa6feb0d54d12e0e9efb9022c41e36b0c95270c677e740f175b75bc160635e69214c7f4519f55dcd1de5eec8519d3e2828fd59e1abec4fa7efb747bb9cb  0006-dispmucharget-logs.patch
+3f8f001964a79abacc78492ab5397b2692056bf0ee8012eb05e09f209f98b07b98a5e2d1227da7f0975c003d26bb26c495b17873bce0f932cf377ddf69af7cd6  0007-dispmucharget-logs.patch
+e8455d4dd12902ec212e9c5243b121eadea276301f0d8ae646c914faf2a765731351b8656ee8b006b68ca515c86e25a695678a834b36c96a9ce11f302e9d4b51  0008-dispmucharget-logs.patch
+377a33c164afe75695a742062817aed7ab6aa995331243e410b8dd8688b54d43d61d3f9071475edf95d517978e85c30b2970c7c03566ec95a941249182f19416  0009-disfocaltouch-logs.patch
+353c2c33250dd9d2ed7eab78a966a4fbb10cc9db092abdc36873f2173217b3793db840b27b4c725e6c163d10f9551c1bc6b7e2139fb5d407585ce32f5c113108  0010-distickbroadcast-logs.patch
+c2460b0839b5d3065c180f0623789701c3206c90ff63cbc795b9d171a8bfdc9834cb1fb8d9c1d10b1479e805d97c9ba62df5d8bf4024a034ed1ba9d9b081e6b1  0012-addbacklight.patch
+d06e8714aaf82352b5eb1c32cfdf7cebc7454eef05fd874db7ab3acea3912a27a1ad4df574603f32248dcb72c71c56cf3f4f0fff98bf8dfbd81bcecd46062bd8  0013-mtkkpd.patch
+6aea806fce855d5e0a6c6d8eb2eda9f67068e3ae533d552103da24cc94f6485caef24fad777e9bf1e6ae52018360cb91ca4c5175a7d505f89e115f4dcc599d6d  0014-battery.patch
+c9865b8129035a8f506fb3bf1c0e5f8a1471f9beb42d6777bb391cf39b3d9573b6363f3b7a0d25d73ab94182b04f3cd6c64be4cc47c43bf6bab3b9372c70c6a7  0015-disableusbboost.patch
+09336718e261665041e3a878bc11ff2eb783da5aefe12fb667ca040ec21a181394d32a563d7599e4754c6276f66c07534370aecd8bcb18583739a4946e045a58  0016-dissleptdispwarning.patch
+539f120263f267969d80b16e9f81231dad6f2d8247bd15eeacb010e3314c7f3aada82af1ddc3f1e094e5cf82daf6658964a55e5f8179ed2aae0e26def1f53f6a  0017-disdlpt.patch
+ef7ce3b1f7ceba7d5b754271bd9d2645112327cce23efa6681a01af2bfc7491af1c16e381da667d20236648d1d7b96bd0756dd0edcf480e8665f62069e9934b2  linux4.2-gcc10-extern_YYLOC_global_declaration.patch
+"

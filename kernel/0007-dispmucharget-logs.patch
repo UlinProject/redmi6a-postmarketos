@@ -1,0 +1,28 @@
+From 2a8cca58692e0d8d6688c43d8d7acfca799b8412 Mon Sep 17 00:00:00 2001
+From: Denis Kotlyarov <denis2005991@gmail.com>
+Date: Wed, 23 Sep 2026 10:27:00 +0300
+Subject: [PATCH] drivers: misc: mediatek: mt6370: aggressively stub out driver logging macros
+
+---
+ .../misc/mediatek/pmic/mt6370/mt6370_pmu_charger.c    | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/misc/mediatek/pmic/mt6370/mt6370_pmu_charger.c b/drivers/misc/mediatek/pmic/mt6370/mt6370_pmu_charger.c
+index c0f4a9ba62a3..094948613c8e 100644
+--- a/drivers/misc/mediatek/pmic/mt6370/mt6370_pmu_charger.c
++++ b/drivers/misc/mediatek/pmic/mt6370/mt6370_pmu_charger.c
+@@ -42,6 +42,11 @@
+ static bool dbg_log_en;
+ module_param(dbg_log_en, bool, 0644);
+ 
++#undef __ratelimit
++#define __ratelimit(x) 0
++#define HKLOG(fmt, arg...)
++#define dev_info(dev, fmt, arg...)
++
+ /* ======================= */
+ /* MT6370 Charger Variable */
+ /* ======================= */
+-- 
+2.55.0
+

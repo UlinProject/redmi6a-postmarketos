@@ -1,0 +1,75 @@
+From 2a8cca58692e0d8d6688c43d8d7acfca799b8412 Mon Sep 17 00:00:00 2001
+From: Denis Kotlyarov <denis2005991@gmail.com>
+Date: Wed, 23 Sep 2026 10:27:00 +0300
+Subject: [PATCH] drivers: misc: mediatek: pmic: mute pr_notice logs across multiple PMIC drivers
+
+---
+ drivers/misc/mediatek/pmic/mt6357/v1/pmic_auxadc.c     | 2 ++
+ drivers/misc/mediatek/pmic/mt6358/v1/pmic_auxadc.c     | 2 ++
+ drivers/misc/mediatek/pmic/mt6359/v1/pmic_auxadc.c     | 2 ++
+ drivers/misc/mediatek/pmic/mt6370/mt6370_pmu_charger.c | 3 +++
+ 4 files changed, 9 insertions(+)
+
+diff --git a/drivers/misc/mediatek/pmic/mt6357/v1/pmic_auxadc.c b/drivers/misc/mediatek/pmic/mt6357/v1/pmic_auxadc.c
+index 1cd829b1027b..0dee19f0bda7 100644
+--- a/drivers/misc/mediatek/pmic/mt6357/v1/pmic_auxadc.c
++++ b/drivers/misc/mediatek/pmic/mt6357/v1/pmic_auxadc.c
+@@ -42,6 +42,8 @@
+ 
+ static int auxadc_bat_temp_cali(int bat_temp, int precision_factor);
+ 
++#define pr_notice(fmt, arg...)
++
+ /*********************************
+  * PMIC AUXADC Exported API
+  *********************************/
+diff --git a/drivers/misc/mediatek/pmic/mt6358/v1/pmic_auxadc.c b/drivers/misc/mediatek/pmic/mt6358/v1/pmic_auxadc.c
+index 566fa4a49fcc..ad7eac1350fc 100644
+--- a/drivers/misc/mediatek/pmic/mt6358/v1/pmic_auxadc.c
++++ b/drivers/misc/mediatek/pmic/mt6358/v1/pmic_auxadc.c
+@@ -42,6 +42,8 @@
+ 
+ static int auxadc_bat_temp_cali(int bat_temp, int precision_factor);
+ 
++#define pr_notice(fmt, arg...)
++
+ /*********************************
+  * PMIC AUXADC Exported API
+  *********************************/
+diff --git a/drivers/misc/mediatek/pmic/mt6359/v1/pmic_auxadc.c b/drivers/misc/mediatek/pmic/mt6359/v1/pmic_auxadc.c
+index 56e1aba40630..96b837b9d475 100644
+--- a/drivers/misc/mediatek/pmic/mt6359/v1/pmic_auxadc.c
++++ b/drivers/misc/mediatek/pmic/mt6359/v1/pmic_auxadc.c
+@@ -47,6 +47,8 @@
+ static int auxadc_bat_temp_cali(int bat_temp, int precision_factor);
+ static void wake_up_mdrt_thread(void);
+ 
++#define pr_notice(fmt, arg...)
++
+ static unsigned int mdrt_adc;
+ 
+ /*********************************
+diff --git a/drivers/misc/mediatek/pmic/mt6370/mt6370_pmu_charger.c b/drivers/misc/mediatek/pmic/mt6370/mt6370_pmu_charger.c
+index 094948613c8e..fa4f68f289bc 100644
+--- a/drivers/misc/mediatek/pmic/mt6370/mt6370_pmu_charger.c
++++ b/drivers/misc/mediatek/pmic/mt6370/mt6370_pmu_charger.c
+@@ -39,6 +39,8 @@
+ 
+ #define MT6370_PMU_CHARGER_DRV_VERSION	"1.1.24_MTK"
+ 
++#define printk(fmt, arg...)
++
+ static bool dbg_log_en;
+ module_param(dbg_log_en, bool, 0644);
+ 
+@@ -46,6 +48,7 @@ module_param(dbg_log_en, bool, 0644);
+ #define __ratelimit(x) 0
+ #define HKLOG(fmt, arg...)
+ #define dev_info(dev, fmt, arg...)
++#define dev_notice(dev, fmt, arg...)
+ 
+ /* ======================= */
+ /* MT6370 Charger Variable */
+-- 
+2.55.0
+

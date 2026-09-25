@@ -1,0 +1,41 @@
+From 2a8cca58692e0d8d6688c43d8d7acfca799b8412 Mon Sep 17 00:00:00 2001
+From: Denis Kotlyarov <denis2005991@gmail.com>
+Date: Wed, 23 Sep 2026 12:10:33 +0300
+Subject: [PATCH] drivers: misc: mediatek: usb_boost: disable CPU frequency lock on USB connection
+
+---
+ drivers/misc/mediatek/usb_boost/usb_boost.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/misc/mediatek/usb_boost/usb_boost.c b/drivers/misc/mediatek/usb_boost/usb_boost.c
+index 9c4b84089714..997d03b65f63 100644
+--- a/drivers/misc/mediatek/usb_boost/usb_boost.c
++++ b/drivers/misc/mediatek/usb_boost/usb_boost.c
+@@ -573,7 +573,7 @@ static int create_sys_fs(void)
+ 
+ int usb_boost_init(void)
+ {
+-	int id;
++	/*int id;
+ 
+ 	for (id = 0; id < _TYPE_MAXID; id++) {
+ 		int count;
+@@ -589,13 +589,13 @@ int usb_boost_init(void)
+ 			id, boost_inst[id].wq, &(boost_inst[id].work));
+ 		boost_inst[id].request_func = __request_it;
+ 	}
+-	/* hook workable interface */
++	hook workable interface
+ 	__the_boost_ops.boost = __usb_boost;
+ 	enabled = 1;
+ 
+ 	create_sys_fs();
+ 	default_setting();
+-	inited = 1;
++	inited = 1;*/
+ 
+ 	return 0;
+ }
+-- 
+2.55.0
+
