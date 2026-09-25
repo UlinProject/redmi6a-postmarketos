@@ -49,6 +49,7 @@ This is a simple weekend project: running the current version of postmarketOS on
 ## Software
 
 Running a modern Linux software stack on this hardware has its nuances:
+* **Init System:** Only `OpenRC` is currently supported and working. `systemd` is completely non-functional at this stage.
 * **Toolkits:** 
   * `Qt` applications run fully and stably out of the box, with excellent touchscreen responsiveness.
   * `GTK` applications fail to launch cleanly due to an outdated kernel and a broken `bwrap` (bubblewrap) sandbox mechanism. Even with custom patches applied, touchscreen behavior remains problematic. For example, in `Xfce`, tapping the main application menu does not trigger an action no matter how many times you click it, whereas panel widgets like the clock/date menu respond perfectly.
@@ -112,5 +113,30 @@ while [ $# -gt 0 ]; do
     esac
 done
   ```
+
+  ```bash
+  chmod +x /usr/bin/bwrap
+  ```
 </details>
 
+
+<details> 
+  <summary><b># RNDIS Disconnects & Slow SSH Login (USB Ethernet)</b></summary>
+
+  This issue is caused by `NetworkManager`, which is not fully debugged for this device. Disconnecting and reconnecting the USB cable breaks the RNDIS connection, and SSH logins experience significant delays. To resolve this, you can configure NetworkManager to ignore the `rndis0` interface and let `unudhcpd` handle it instead.
+  
+  ### Step 1: Make rndis0 unmanaged in NetworkManager
+  **File:** `/etc/NetworkManager/conf.d/99-unmanaged-devices.conf`
+  ```ini
+  [keyfile]
+  unmanaged-devices=interface-name:rndis0
+  ```
+
+  ### Step 2: Symlink and enable the unudhcpd service
+  Run the following commands to create a dedicated service instance for `rndis0` and add it to the default runlevel:
+  ```bash
+  sudo ln -s /etc/init.d/unudhcpd /etc/init.d/unudhcpd.rndis0
+  sudo rc-update add unudhcpd.rndis0 default
+  sudo rc-service unudhcpd.rndis0 start
+  ```
+</details>
