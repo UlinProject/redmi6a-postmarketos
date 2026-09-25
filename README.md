@@ -133,6 +133,25 @@ start_pre() {
   
   > ⚠️ **Note:** This is not a proper solution. Be aware that system updates may overwrite this file and restore the original `bwrap` binary.
 
+  Invalid logs:
+  ```
+  [Sep 23 22:56:09] kern kernel: .(1)[3386:bwrap][3386:bwrap] fork [3400:bwrap] total fork time[1147761310 ns] > 1s
+[Sep 23 22:56:09] kern kernel: .(1)[3386:bwrap]Mem-Info:
+[Sep 23 22:56:09] kern kernel: .(1)[3386:bwrap]active_anon:28059 inactive_anon:2296 isolated_anon:0\x0a active_file:18724 inactive_file:36499 isolated_file:0\x0a unevictable:0 dirty:20 writeback:0 unstable:0\x0a slab_reclaimable:3894 slab_unreclaimable:5662\x0a mapped:32740 shmem:2581 pagetables:695 bounce:0\x0a free:357590 free_pcp:1167 free_cma:0
+[Sep 23 22:56:09] kern kernel: .(1)[3386:bwrap]Node 0 active_anon:112236kB inactive_anon:9184kB active_file:74896kB inactive_file:145996kB unevictable:0kB isolated(anon):0kB isolated(file):0kB mapped:130960kB dirty:80kB writeback:0kB shmem:10324kB writeback_tmp:0kB unstable:0kB pages_scanned:0 all_unreclaimable? no
+[Sep 23 22:56:09] kern kernel: Normal free:408696kB min:2764kB low:3452kB high:4140kB active_anon:0kB inactive_anon:0kB active_file:16168kB inactive_file:1316kB unevictable:0kB writepending:40kB present:532160kB managed:486960kB mlocked:0kB slab_reclaimable:15576kB slab_unreclaimable:22648kB kernel_stack:2816kB pagetables:2780kB bounce:0kB free_pcp:2076kB local_pcp:356kB free_cma:0kB
+[Sep 23 22:56:09] kern kernel: .(1)[3386:bwrap]lowmem_reserve[]: 0 9231 9231
+[Sep 23 22:56:09] kern kernel: HighMem free:1021664kB min:512kB low:2220kB high:3928kB active_anon:112236kB inactive_anon:9184kB active_file:58728kB inactive_file:144680kB unevictable:0kB writepending:40kB present:1445624kB managed:1367736kB mlocked:0kB slab_reclaimable:0kB slab_unreclaimable:0kB kernel_stack:0kB pagetables:0kB bounce:0kB free_pcp:2592kB local_pcp:620kB free_cma:0kB
+[Sep 23 22:56:09] kern kernel: .(1)[3386:bwrap]lowmem_reserve[]: 0 0 0
+[Sep 23 22:56:09] kern kernel: Normal: 60*4kB (UME) 29*8kB (UME) 10*16kB (UME) 4*32kB (ME) 8*64kB (UM) 5*128kB (M) 5*256kB (M) 6*512kB (UME) 5*1024kB (M) 4*2048kB (UM) 95*4096kB (M) = 408696kB
+[Sep 23 22:56:09] kern kernel: HighMem: 16*4kB (UM) 16*8kB (UM) 14*16kB (UM) 8*32kB (UM) 5*64kB (M) 6*128kB (UM) 4*256kB (UM) 4*512kB (U) 3*1024kB (UM) 5*2048kB (UM) 245*4096kB (UM) = 1021664kB
+[Sep 23 22:56:09] kern kernel: .(1)[3386:bwrap]57803 total pagecache pages
+[Sep 23 22:56:09] kern kernel: .(1)[3386:bwrap]0 pages in swap cache
+[Sep 23 22:56:09] kern kernel: .(1)[3386:bwrap]Swap cache stats: add 0, delete 0, find 0/0
+[Sep 23 22:56:09] kern kernel: .(1)[3386:bwrap]Free swap  = 0kB
+[Sep 23 22:56:09] kern kernel: .(1)[3386:bwrap]Total swap = 0kB
+  ```
+  
   ### Step 1: Remove or backup the original binary
   ```bash
   sudo rm /usr/bin/bwrap
