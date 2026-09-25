@@ -218,6 +218,27 @@ stop() {
   ```
 </details>
 
+<details> 
+  <summary><b># Hide Mouse Cursor (Openbox)</b></summary>
+
+  Since this is a touchscreen device, keeping a permanent mouse pointer on the screen is annoying. You can use `unclutter-xfixes` to automatically hide the cursor on touch input or after a brief period of inactivity.
+
+  ### Step 1: Install the utility
+  Make sure the required package is installed in your system:
+  ```bash
+  sudo apk add unclutter-xfixes
+  ```
+
+  ### Step 2: Configure Openbox autostart
+  Add the following command to hide the cursor automatically on startup and touch interactions:
+
+  **File:** `/home/alarm/.config/openbox/autostart`
+  
+  ```sh
+  unclutter-xfixes --timeout 1 --jitter 5 --hide-on-touch --start-hidden &
+  ```
+</details>
+
 
 <details> 
   <summary><b># Display & Touchscreen Rotation (X11 + Openbox)</b></summary>
@@ -262,7 +283,7 @@ stop() {
   **File:** `/home/alarm/.config/openbox/autostart`
   
   ```sh
-  DISPLAY=:0 xinput set-prop 8 "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1 &
+  xinput set-prop 8 "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1 &
   ```
 </details>
 
