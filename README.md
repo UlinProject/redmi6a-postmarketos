@@ -62,6 +62,59 @@ Running a modern Linux software stack on this hardware has its nuances:
 A collection of workarounds and fixes to resolve various issues. Keep in mind that most major problems and limitations stem directly from the outdated kernel.
 
 <details> 
+  <summary><b># Display Manager Fails to Launch / Screen Frozen on Boot (tinydm)</b></summary>
+
+  On a fresh postmarketOS installation with a lightweight environment like `Openbox`, `X11` might frozen on boot, leaving the display completely frozen. However, running `killall Xorg && /etc/init.d/tinydm restart` manually via SSH brings up the graphical interface perfectly. Adding a 3-second delay to the `tinydm` init script ensures a successful boot every time.
+
+  > ⚠️ **Note:** This is not a proper solution. Be aware that system updates may overwrite this file and restore the original `tinydm` binary.
+
+  ### Step 1: Add a delay to the tinydm init script
+  Edit the configuration file to include a `sleep 3` command inside the `start_pre()` block:
+
+  **File:** `/etc/init.d/tinydm`
+  
+  ```sh
+  #!/sbin/openrc-run
+# Copyright 2020 Oliver Smith
+# SPDX-License-Identifier: GPL-3.0-or-later
+supervisor=supervise-daemon
+
+name="tinydm"
+description="tinydm"
+
+command="/usr/bin/autologin"
+command_args="tinydm-run-session"
+
+depend() {
+        provide display-manager
+        need localmount
+        want dbus elogind
+}
+
+start_pre() {
+        sleep 3
+
+        # default to 1000 if none set in config
+        [ -z "$AUTOLOGIN_UID" ] && AUTOLOGIN_UID=1000
+
+        user=$(getent passwd ${AUTOLOGIN_UID} | cut -d: -f1)
+        if [ -z "$user" ]; then
+                eerror "ERROR: unable to find user with uid $AUTOLOGIN_UID"
+                return 1
+        fi
+
+        command_args="$user $command_args"
+}
+  ```
+
+  ### Step 2: Restart the service
+  Apply the patch immediately by restarting the display manager service:
+  ```bash
+  sudo rc-service tinydm restart
+  ```
+</details>
+
+<details> 
   <summary><b># Time & Date (chronyd)</b></summary>
   
   **File:** `/etc/conf.d/chronyd`
