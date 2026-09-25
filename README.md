@@ -456,6 +456,25 @@ export LIBGL_ALWAYS_SOFTWARE=1
   ```
 </details>
 
+<details> 
+  <summary><b># Mute FocalTech Touchscreen ESD</b></summary>
+
+  The FocalTech touchscreen driver continuously floods the kernel log (`dmesg`) with ESD (Electrostatic Discharge) protection routines. While proper integration requires additional Linux userspace tools, the verbose output simply litters logs on this port. This `udev` rule disables the ESD protection mode at the driver level to keep your logs clean.
+  
+  ### Step 1: Create the udev rule
+  **File:** `/etc/udev/rules.d/99-fts-esd.rules`
+
+  ```ini
+  ACTION=="add", SUBSYSTEM=="i2c", ATTR{fts_esd_mode}=="*", ATTR{fts_esd_mode}="0"
+  ```
+
+  ### Step 2: Apply changes
+  Reload the `udev` rules to apply the configuration instantly without rebooting:
+  ```bash
+  sudo udevadm control --reload-rules && sudo udevadm trigger
+  ```
+</details>
+
 
 <details> 
   <summary><b># Display & Touchscreen Rotation (x11, openbox)</b></summary>
