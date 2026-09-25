@@ -266,6 +266,29 @@ stop() {
   ```
 </details>
 
+<details> 
+  <summary><b># Automatic Reboots (Xfce)</b></summary>
+
+  Further testing on `Xfce` was abandoned due to the previously mentioned touchscreen controls. If you encounter unexpected automatic reboots after a specific period of uptime. You can fix this by replacing the `elogind` daemon with a sleeping stub.
+
+  > ⚠️ **Note:** This is not a proper solution. Be aware that system updates may overwrite this file and restore the original `elogind` binary.
+
+  
+  ### Step 1: Backup and replace the elogind binary
+  Run the following commands to backup the original daemon, create a non-functional shell stub that keeps the init system happy, and make it executable:
+
+  ```bash
+  sudo mv /usr/libexec/elogind/elogind /usr/libexec/elogind/elogind.bak
+
+  sudo tee /usr/libexec/elogind/elogind << 'EOF'
+  #!/bin/sh
+  echo "elogind daemon is completely disabled by stub"
+  exec sleep infinity
+  EOF
+  
+  sudo chmod +x /usr/libexec/elogind/elogind
+  ```
+</details>
 
 
 ## Benchmarks
