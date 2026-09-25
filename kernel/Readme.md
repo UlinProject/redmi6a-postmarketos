@@ -26,4 +26,4 @@
 At this stage, I’ve gotten everything I wanted out of this old device. It runs surprisingly well on the adjusted legacy kernel. Any future development or changes for this device are planned to be focused entirely on the **mainline kernel** branch, should I decide to return to this project.
 
 ## License
-This project is licensed under the **GNU General Public License v2.0** - see the [../LICENSE](LICENSE) file for details.
+This project is licensed under the **GNU General Public License v2.0** - see the [LICENSE](../LICENSE) file for details.
