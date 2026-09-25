@@ -130,7 +130,7 @@ start_pre() {
   command_args="-F 0"
   ```
 
-  Without this, chronyd won't even start.
+  Without this configuration change, the `chronyd` time synchronization daemon won't even start on this device. 
 </details>
 
 <details> 
