@@ -140,3 +140,55 @@ done
   sudo rc-service unudhcpd.rndis0 start
   ```
 </details>
+
+
+<details> 
+  <summary><b># Enable zRAM Swap</b></summary>
+  The kernel retains the ability to use zram, but only for a single device and without `modprobe` support. The standard postmarket zram service does not work with it.
+
+  ### Step 1: Create the custom init script
+  **File**: `/etc/init.d/custom-zram`
+  ```bash
+  #!/sbin/openrc-run
+
+description="Custom zRAM setup for 1.8GB device"
+
+depend() {
+    after modules
+    before localmount
+}
+
+start() {
+    ebegin "Starting custom zRAM swap"
+
+    modprobe zram num_devices=1 2>/dev/null || true
+
+    swapoff /dev/zram0 2>/dev/null || true
+    echo 1 > /sys/block/zram0/reset
+    echo lz4 > /sys/block/zram0/comp_algorithm
+    echo 2147483648 > /sys/block/zram0/disksize
+
+    mkswap /dev/zram0 >/dev/null
+    swapon -p 100 /dev/zram0
+
+    sysctl -w vm.swappiness=100 >/dev/null
+    sysctl -w vm.watermark_boost_factor=0 >/dev/null
+
+    eend $?
+}
+
+stop() {
+    ebegin "Stopping custom zRAM swap"
+    swapoff /dev/zram0 2>/dev/null || true
+    echo 1 > /sys/block/zram0/reset
+    eend $?
+}
+  ```
+
+  ### Step 2: Make the script executable and enable the service
+  ```bash
+  sudo chmod +x /etc/init.d/custom-zram
+  sudo rc-update add custom-zram default
+  sudo rc-service custom-zram start
+  ```
+</details>
