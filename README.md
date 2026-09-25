@@ -547,6 +547,13 @@ export LIBGL_ALWAYS_SOFTWARE=1
   ```
 </details>
 
+## Screenshots
+
+<img src="./screenshots/1.png" width="30%"></img>
+<img src="./screenshots/2.png" width="30%"></img>
+<img src="./screenshots/3.png" width="30%"></img>
+
+
 
 ## Benchmarks
 
@@ -633,6 +640,7 @@ Threads fairness:
 
   ```
 </details>
+
 
 ## License
 This project is licensed under the **GNU General Public License v2.0** - see the [LICENSE](LICENSE) file for details.
