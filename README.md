@@ -219,6 +219,55 @@ stop() {
 </details>
 
 
+<details> 
+  <summary><b># Display & Touchscreen Rotation (X11 + Openbox)</b></summary>
+
+  By default, the display initializes in portrait orientation. This patch configures `Xorg` to rotate the frame buffer clockwise (`CW`) and updates the `xinput` coordinate transformation matrix in `Openbox` so that touch inputs align correctly with the rotated screen.
+
+  ### Step 1: Configure Xorg display rotation
+  **File:** `/etc/X11/xorg.conf.d/15-fbdev.conf`
+
+  ```ini
+  Section "Monitor"
+      Identifier "CactusMonitor"
+      HorizSync   30.0 - 70.0
+      VertRefresh 59.0 - 61.0
+      Option      "PreferredMode" "720x1440"
+  EndSection
+
+  Section "Device"
+      Identifier "CactusVideoCard"
+      Driver     "fbdev"
+      Option     "ShadowFB" "true"
+      Option     "Rotate" "CW"
+  EndSection
+
+  Section "Screen"
+      Identifier "Default Screen"
+      Device     "CactusVideoCard"
+      Monitor    "CactusMonitor"
+      DefaultDepth 24
+      SubSection "Display"
+          Depth   24
+          Modes   "720x1440"
+  EndSubSection
+  EndSection
+  ```
+
+  ### Step 2: Map touchscreen coordinates in Openbox
+  Add this line to ensure the input coordinates match the layout rotation upon session startup. 
+  
+  *Note: Double-check your touchscreen device ID (replace `8` if your device has a different ID in `xinput list`).*
+
+  **File:** `/home/alarm/.config/openbox/autostart`
+  
+  ```sh
+  DISPLAY=:0 xinput set-prop 8 "Coordinate Transformation Matrix" 0 1 0 -1 0 1 0 0 1 &
+  ```
+</details>
+
+
+
 ## Benchmarks
 
 <details> 
