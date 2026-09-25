@@ -309,6 +309,32 @@ stop() {
 </details>
 
 <details> 
+  <summary><b># Glycin / Image Loading Fix (GTK4 & GNOME apps)</b></summary>
+
+  `Glycin` is an image decoding library used by modern GTK4/GNOME applications. Due to its heavy reliance on strict sandboxing features that are broken on outdated kernels, image and icon rendering will fail completely. This patch forces Glycin to bypass sandboxing and corrects resource directory paths.
+
+  ### Step 1: Create a symlink for shared data
+  ```bash
+  sudo ln -s /usr/share /usr/share/glycin
+  ```
+
+  ### Step 2: Override Glycin environment variables
+  Create a global environment script to unset broken configurations, disable the sandbox, and remap the data directory:
+
+  **File:** `/etc/profile.d/99ignore-glycin.sh`
+  
+  ```sh
+  #!/bin/sh
+  unset GLYCIN_DATA_DIR
+  unset GLYCIN_LOADERS_DIR
+
+  export GLYCIN_DATA_DIR="/usr/share"
+  export GLYCIN_DISABLE_SANDBOX=1
+  ```
+</details>
+
+
+<details> 
   <summary><b># Hide Mouse Cursor (Openbox)</b></summary>
 
   Since this is a touchscreen device, keeping a permanent mouse pointer on the screen is annoying. You can use `unclutter-xfixes` to automatically hide the cursor on touch input or after a brief period of inactivity.
