@@ -63,6 +63,8 @@ Running a modern Linux software stack on this hardware has its nuances:
 <img src="./screenshots/2.png" width="30%"></img>
 <img src="./screenshots/3.png" width="30%"></img>
 
+[See all](./screenshots)
+
 
 ## Patches
 
