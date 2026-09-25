@@ -43,7 +43,7 @@ This is a simple weekend project: running the current version of postmarketOS on
 | camera | Front & Rear | **Untested.** Not worked on or initialized. |
 | battery | BN37 (Max 4.4V) | **Partial.** A primitive linear capacity calculation patch is applied (not suitable for daily driver use). If you prefer to use the proprietary MTK downstream kernel blob, do not apply this patch. |
 | leds | Front notification LED, Flashlight | **Working.** Both LEDs are fully operational. (/sys/class/leds/flashlight/brightness - flashlight; /sys/class/leds/blue/brightness - LED on the screen)|
-| vibration | — | **Working.** However, no custom patches were made to integrate it into standard Linux subsystem frameworks. To trigger vibration, you must manually set the duration first and then write `1` to `activate`. (/sys/class/leds/vibrator) |
+| vibration | — | **Working.** However, no custom patches were made to integrate it into standard Linux subsystem frameworks. To trigger vibration, you must manually set the duration (/sys/class/leds/vibrator/duration) first and then write `1` to `activate`. (/sys/class/leds/vibrator) |
 | buttons | Volume Up, Volume Down, Power | **Working.** Key patch added. |
 
 ## Software
