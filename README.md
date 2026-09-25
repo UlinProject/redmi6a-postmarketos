@@ -239,6 +239,35 @@ stop() {
   ```
 </details>
 
+<details> 
+  <summary><b># Screen Not Refreshing / Frozen Display Fix</b></summary>
+
+  Because this port currently relies on a pre-initialized simple framebuffer without proper hardware GPU acceleration, the display does not refresh its frames automatically. To solve this, you need to configure the `msm-fb-refresher` daemon to force screen updates periodically.
+  
+  ### Step 1: Create the OpenRC init script
+  **File:** `/etc/init.d/msm-fb-refresher`
+  
+  ```sh
+  #!/sbin/openrc-run
+
+  command="/usr/sbin/msm-fb-refresher"
+  command_args="--loop -r 60"
+  supervisor="supervise-daemon"
+
+  depend() {
+          after bootmisc
+  }
+  ```
+
+  ### Step 2: Make the script executable and enable the service
+  Run the following commands to set the correct permissions, register the daemon, and start the display refresher loop immediately:
+  ```bash
+  sudo chmod +x /etc/init.d/msm-fb-refresher
+  sudo rc-update add msm-fb-refresher default
+  sudo rc-service msm-fb-refresher start
+  ```
+</details>
+
 
 <details> 
   <summary><b># Display & Touchscreen Rotation (X11 + Openbox)</b></summary>
