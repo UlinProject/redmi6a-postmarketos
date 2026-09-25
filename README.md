@@ -192,3 +192,115 @@ stop() {
   sudo rc-service custom-zram start
   ```
 </details>
+
+<details> 
+  <summary><b># Display Backlight Control</b></summary>
+
+  Patches for fully functional backlight control are already included in the kernel. To control brightness without root privileges, you just need to ensure the `video` group exists, assign your user to it, and deploy the appropriate `udev` rule.
+
+  ### Step 1: Create the video group and add your user
+  Run the following commands to create the group (in case it does not exist) and add your current user to it:
+  ```bash
+  sudo groupadd -f video
+  sudo adduser $USER video
+  ```
+
+  ### Step 2: Create the udev rule
+  **File:** `/etc/udev/rules.d/99-backlight.rules`
+  
+  ```ini
+  SUBSYSTEM=="backlight", ACTION=="add", KERNEL=="backlight", PROGRAM="/bin/chgrp video /sys/class/backlight/%k/brightness /sys/class/backlight/%k/bl_power", RUN+="/bin/chmod g+w /sys/class/backlight/%k/brightness /sys/class/backlight/%k/bl_power"
+  ```
+
+  ### Step 3: Apply changes
+  ```bash
+  sudo udevadm control --reload-rules && sudo udevadm trigger
+  ```
+</details>
+
+
+## Benchmarks
+
+<details> 
+  <summary><b># CPU (4 threads)</b></summary>
+  
+  ```
+  sysbench --threads=4 cpu run
+sysbench 1.0.20 (using system LuaJIT 2.1.1723681758)
+
+Running the test with following options:
+Number of threads: 4
+Initializing random number generator from current time
+
+
+Prime numbers limit: 10000
+
+Initializing worker threads...
+
+Threads started!
+
+CPU speed:
+    events per second:   316.20
+
+General statistics:
+    total time:                          10.0080s
+    total number of events:              3166
+
+Latency (ms):
+         min:                                   12.47
+         avg:                                   12.64
+         max:                                   35.58
+         95th percentile:                       12.75
+         sum:                                40012.65
+
+Threads fairness:
+    events (avg/stddev):           791.5000/5.41
+    execution time (avg/stddev):   10.0032/0.00
+
+  ```
+  These are standard figures for an Armv7 2.0 GHz quad-core processor.
+</details>
+<details> 
+  <summary><b># MEMORY (4 threads)</b></summary>
+  
+  ```
+sysbench --threads=4 memory run
+sysbench 1.0.20 (using system LuaJIT 2.1.1723681758)
+
+Running the test with following options:
+Number of threads: 4
+Initializing random number generator from current time
+
+
+Running memory speed test with the following options:
+  block size: 1KiB
+  total size: 102400MiB
+  operation: write
+  scope: global
+
+Initializing worker threads...
+
+Threads started!
+
+Total operations: 18852965 (1884178.24 per second)
+
+18411.10 MiB transferred (1840.02 MiB/sec)
+
+
+General statistics:
+    total time:                          10.0010s
+    total number of events:              18852965
+
+Latency (ms):
+         min:                                    0.00
+         avg:                                    0.00
+         max:                                   20.06
+         95th percentile:                        0.00
+         sum:                                21599.12
+
+Threads fairness:
+    events (avg/stddev):           4713241.2500/23170.12
+    execution time (avg/stddev):   5.3998/0.00
+
+  ```
+</details>
